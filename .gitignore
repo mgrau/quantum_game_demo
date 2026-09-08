@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.DS_Store
+*.local
+
+# The full curriculum stays in the local design workspace. This repository is
+# intentionally the five-level vertical slice loaded from 00-demo.yaml.
+src/levels/01-instruments.yaml
+src/levels/02-workshop.yaml
+src/levels/03-sealed-box.yaml
+
+# Longer-form curriculum notes are not part of the demo release.
+docs/

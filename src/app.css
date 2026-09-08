@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+
+/* A drawing is a picture, not a selection — dragging one should never leave a
+   trail of highlighted markup behind it. */
+svg {
+  user-select: none;
+}
+
+/* Solved: one ring travelling outwards from the board, and the star that
+   appears beside the verdict landing with it. Both are short. A celebration
+   that outstays its welcome is worse than none, and this one plays every time a
+   player gets something right. */
+@keyframes ms-ring {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-emerald-400) 55%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 22px transparent;
+  }
+}
+
+.ms-solved {
+  animation: ms-ring 750ms ease-out;
+}
+
+@keyframes ms-pop {
+  0% {
+    transform: scale(0.4) rotate(-25deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.25) rotate(6deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+.ms-pop {
+  animation: ms-pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes ms-scan-dot {
+  0%, 100% { opacity: 0.35; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.25); }
+}
+
+.ms-scan-dot {
+  animation: ms-scan-dot 850ms ease-in-out infinite;
+}
+
+@keyframes ms-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ms-spin {
+  display: inline-block;
+  animation: ms-spin 850ms linear infinite;
+}
+
+@keyframes ms-complete {
+  from { opacity: 0; transform: translateY(18px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ms-complete {
+  animation: ms-complete 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-solved,
+  .ms-pop,
+  .ms-scan-dot,
+  .ms-spin,
+  .ms-complete {
+    animation: none;
+  }
+}

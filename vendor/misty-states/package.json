@@ -1,0 +1,12 @@
+{
+  "name": "misty-states",
+  "private": true,
+  "version": "0.1.0-vendored",
+  "type": "module",
+  "exports": {
+    ".": "./src/core/api.ts",
+    "./render": "./src/core/index.ts",
+    "./kernel": "./src/core/kernel.ts",
+    "./ui": "./src/core/ui/board.ts"
+  }
+}

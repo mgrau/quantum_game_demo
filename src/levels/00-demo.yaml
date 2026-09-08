@@ -1,0 +1,140 @@
+# A five-level vertical slice: one new idea at a time, ending with a genuine
+# quantum algorithm whose one circuit must survive several hidden worlds.
+
+pack: demo
+title: Five quantum experiments
+description: From one flipped qubit to an algorithm that tests a hidden function.
+story: >-
+  Build circuits by dragging gates onto the wires. Each experiment adds one
+  idea; the final two test one circuit against several possible inputs.
+
+levels:
+  - id: d.1
+    title: Flip the bit
+    objective: Turn the white |0⟩ qubit into a black |1⟩ qubit.
+    concepts: [gates]
+    brief: |
+      Every wire carries a qubit. White means `0`; black means `1`.
+
+      Drag a gate from the tray onto the wire. The state below the circuit
+      updates immediately, so you can see what every gate changes.
+    qubits: 1
+    goal: { kind: state, state: "1" }
+    palette: [X, H]
+    par: { gates: 1 }
+    solution: X 1
+    hints:
+      - "X is the quantum NOT gate: it swaps white and black."
+
+  - id: d.2
+    title: Split the possibilities
+    objective: Give one qubit an equal chance of being measured as 0 or 1.
+    concepts: [superposition]
+    brief: |
+      A quantum circuit can carry possibilities at the same time. The target
+      `0|1` means an even superposition of white and black.
+
+      This is not a hidden coin toss: both possibilities continue through the
+      rest of the circuit and can interfere later.
+    qubits: 1
+    goal: { kind: state, state: "0|1" }
+    palette: [X, H]
+    limits: { gates: 2 }
+    par: { gates: 1 }
+    solution: H 1
+    hints:
+      - H (Hadamard) splits a definite qubit into an even superposition.
+
+  - id: d.3
+    title: Link two qubits
+    objective: Create |00⟩ + |11⟩, so the two qubits always agree.
+    concepts: [superposition, entanglement]
+    brief: |
+      First split the top qubit into two possibilities. Then let it control
+      whether the bottom qubit flips.
+
+      The result is entangled: neither qubit has an independent state, but
+      measuring either one predicts the other.
+    qubits: 2
+    goal: { kind: state, state: "00|11" }
+    palette: [X, H, CNOT]
+    limits: { gates: 3 }
+    par: { gates: 2, layers: 2 }
+    solution: |-
+      H 1
+      CNOT 1 -> 2
+    hints:
+      - Put H on the top wire first.
+      - A CNOT flips its target only when its control is black.
+
+  - id: d.4
+    title: Build a NOT from phase
+    objective: Recreate an X gate using only H and Z gates.
+    concepts: [phase, interference, equivalence]
+    brief: |
+      This time you are building an **operation**, not one lucky output. Your
+      circuit must act like X for both possible inputs: `0` and `1`.
+
+      Click the input qubit to try either case. When the circuit is correct,
+      verification will animate both tests before the level is complete.
+    qubits: 1
+    goal: { kind: operator, equals: X 1 }
+    palette: [H, Z]
+    limits: { gates: 4 }
+    par: { gates: 3, layers: 3 }
+    solution: |-
+      H 1
+      Z 1
+      H 1
+    hints:
+      - "H changes the basis: a phase difference can become a visible flip."
+      - Put Z between two Hadamards.
+
+  - id: d.5
+    title: Ask the sealed box once
+    objective: Decide whether every hidden function is constant or balanced with one query.
+    concepts: [oracle, phase, interference]
+    brief: |
+      The sealed box contains one of four one-bit functions. Constant functions
+      answer the same for `0` and `1`; balanced functions answer differently.
+
+      Build one circuit—before you know which function is inside. The top wire
+      must finish white for either constant box and black for either balanced
+      box. Verification will open four simulated worlds and test the same
+      circuit in each. You may place the box only once.
+
+      The bottom wire begins black so it can carry the box's answer back as
+      phase. Interference then makes that invisible phase readable.
+    qubits: 2
+    input: "01"
+    goal:
+      kind: oracle
+      slot: f
+      wires: 2
+      trials:
+        - name: constant 0
+          circuit: ""
+          expect: "00|-01"
+        - name: constant 1
+          circuit: X 2
+          expect: "00|-01"
+        - name: balanced f(x)=x
+          circuit: CNOT 1 -> 2
+          expect: "10|-11"
+        - name: balanced f(x)=not x
+          circuit: |-
+            CNOT 1 -> 2
+            X 2
+          expect: "10|-11"
+    palette: [H, X, Z]
+    limits: { gates: 6, queries: 1 }
+    par: { gates: 4, layers: 3 }
+    solution: |-
+      H 1
+      H 2
+      box "f" 1-2
+      H 1
+    hints:
+      - Put both wires into superposition before the box sees them.
+      - With the bottom wire in `0|-1`, the answer returns as phase on the top wire.
+      - A final H on the top wire turns constant-versus-balanced phase into 0-versus-1.
